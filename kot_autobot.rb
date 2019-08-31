@@ -56,6 +56,9 @@ class Driver
       # 退社時間の入力
       Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_2')).select_by(:text, '退勤')
       driver.find_element(id: 'recording_timestamp_time_2').send_keys(time_out)
+
+      # 打刻登録
+      driver.action.click(driver.find_element(id: 'button_01')).perform
     end
 
     driver.quit
