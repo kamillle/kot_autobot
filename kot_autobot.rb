@@ -33,8 +33,10 @@ class KotAutobot
     login_password_element.send_keys(ENV['KOT_LOGIN_PASSWORD'])
     driver.action.click(driver.find_element(id: 'login_button')).perform
 
-    # 今8月でもう入力終わったので、翌月に飛ぶ
-    driver.action.click(driver.find_element(id: 'button_next_month')).perform
+    # 指定された年と月の勤怠入力画面を開く
+    driver.execute_script("return $('#year').val(#{target_year});")
+    driver.execute_script("return $('#month').val(#{target_month});")
+    driver.action.click(driver.find_element(id: 'display_button')).perform
 
     lists = driver.find_elements(class: 'htBlock-selectOther')
 
