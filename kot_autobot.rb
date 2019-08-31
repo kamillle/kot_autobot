@@ -1,16 +1,6 @@
-require 'bundler/inline'
-
-# Gemfile使ってもいいかもね
-gemfile do
-  source 'https://rubygems.org'
-
-  gem 'selenium-webdriver'
-  gem 'pry-byebug'
-end
+require "selenium-webdriver"
 
 class Driver
-  require "selenium-webdriver"
-
   KOT_LOGIN_URL = "https://s3.kingtime.jp/admin/gzuSQM3Pi3cSdfm7yCAwqmPjBPZrpS3U?page_id=/login/do_logout".freeze
 
   class << self
