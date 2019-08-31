@@ -23,7 +23,6 @@ class KotAutobot
     @driver ||= Selenium::WebDriver.for :chrome, options: driver_options
   end
 
-  # sample code
   def run(target_year, target_month)
     driver.navigate.to(KOT_LOGIN_URL)
 
