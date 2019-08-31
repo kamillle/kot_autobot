@@ -28,11 +28,7 @@ class KotAutobot
 
     login_kot
 
-    # 指定された年と月の勤怠入力画面を開く
-    # id='year', 'month' はhiddenなので、jsを実行して値を入れている
-    driver.execute_script("return $('#year').val(#{target_year});")
-    driver.execute_script("return $('#month').val(#{target_month});")
-    driver.action.click(driver.find_element(id: 'display_button')).perform
+    open_date_of_target_attendance_registration(target_year, target_month)
 
     regist_attendances(target_year, target_month)
 
@@ -53,6 +49,15 @@ class KotAutobot
     driver.find_element(id: 'login_password').send_keys(ENV['KOT_LOGIN_PASSWORD'])
 
     driver.action.click(driver.find_element(id: 'login_button')).perform
+  end
+
+  # 指定された年と月の勤怠入力画面を開く
+  def open_date_of_target_attendance_registration(target_year, target_month)
+    # id='year', 'month' はhiddenなので、jsを実行して値を入れている
+    driver.execute_script("return $('#year').val(#{target_year});")
+    driver.execute_script("return $('#month').val(#{target_month});")
+
+    driver.action.click(driver.find_element(id: 'display_button')).perform
   end
 
   def regist_attendances(target_year, target_month)
