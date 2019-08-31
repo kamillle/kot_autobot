@@ -5,6 +5,7 @@ GEM
     childprocess (1.0.1)
       rake (< 13.0)
     coderay (1.1.2)
+    dotenv (2.7.5)
     method_source (0.9.2)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -22,6 +23,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dotenv
   pry-byebug
   selenium-webdriver
 
