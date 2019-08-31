@@ -26,11 +26,7 @@ class KotAutobot
   def run(target_year, target_month)
     driver.navigate.to(KOT_LOGIN_URL)
 
-    login_id_element = driver.find_element(id: 'login_id')
-    login_id_element.send_keys(ENV['KOT_LOGIN_ID'])
-    login_password_element = driver.find_element(id: 'login_password')
-    login_password_element.send_keys(ENV['KOT_LOGIN_PASSWORD'])
-    driver.action.click(driver.find_element(id: 'login_button')).perform
+    login_kot
 
     # 指定された年と月の勤怠入力画面を開く
     # id='year', 'month' はhiddenなので、jsを実行して値を入れている
@@ -49,6 +45,14 @@ class KotAutobot
     options = Selenium::WebDriver::Chrome::Options.new
 
     options
+  end
+
+  # .envに登録されたidとpasswordを使ってkotにログインする
+  def login_kot
+    driver.find_element(id: 'login_id').send_keys(ENV['KOT_LOGIN_ID'])
+    driver.find_element(id: 'login_password').send_keys(ENV['KOT_LOGIN_PASSWORD'])
+
+    driver.action.click(driver.find_element(id: 'login_button')).perform
   end
 
   def regist_attendances(target_year, target_month)
