@@ -1,16 +1,12 @@
 require "selenium-webdriver"
+require 'dotenv/load'
 
 class Driver
   KOT_LOGIN_URL = "https://s3.kingtime.jp/admin/gzuSQM3Pi3cSdfm7yCAwqmPjBPZrpS3U?page_id=/login/do_logout".freeze
 
   class << self
     def access_kot
-      print 'enter kot id: '
-      id = STDIN.gets.chomp.strip
-      print 'enter kot password: '
-      password = STDIN.gets.chomp.strip
-
-      self.new.access_kot(id, password)
+      self.new.access_kot
     end
   end
 
@@ -21,13 +17,13 @@ class Driver
   end
 
   # sample code
-  def access_kot(id, password)
+  def access_kot
     driver.navigate.to(KOT_LOGIN_URL)
 
     login_id_element = driver.find_element(id: 'login_id')
-    login_id_element.send_keys(id)
+    login_id_element.send_keys(ENV['KOT_LOGIN_ID'])
     login_password_element = driver.find_element(id: 'login_password')
-    login_password_element.send_keys(password)
+    login_password_element.send_keys(ENV['KOT_LOGIN_PASSWORD'])
     driver.action.click(driver.find_element(id: 'login_button')).perform
 
     # 今8月でもう入力終わったので、翌月に飛ぶ
