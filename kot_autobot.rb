@@ -1,5 +1,6 @@
 require 'bundler/inline'
 
+# Gemfile使ってもいいかもね
 gemfile do
   source 'https://rubygems.org'
 
