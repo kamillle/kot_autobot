@@ -9,3 +9,9 @@ KOT自動入力くん
 KOT_LOGIN_ID=xxx
 KOT_LOGIN_PASSWORD=yyy
 ```
+
+その上で下記コマンドを実行するとKOTへ自動で勤怠を登録します
+
+```
+bundle exec ruby kot_autobot.rb
+```
