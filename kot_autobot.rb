@@ -33,6 +33,7 @@ class KotAutobot
     driver.action.click(driver.find_element(id: 'login_button')).perform
 
     # 指定された年と月の勤怠入力画面を開く
+    # id='year', 'month' はhiddenなので、jsを実行して値を入れている
     driver.execute_script("return $('#year').val(#{target_year});")
     driver.execute_script("return $('#month').val(#{target_month});")
     driver.action.click(driver.find_element(id: 'display_button')).perform
