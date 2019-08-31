@@ -52,6 +52,10 @@ class Driver
       # 出社時間の入力
       Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_1')).select_by(:text, '出勤')
       driver.find_element(id: 'recording_timestamp_time_1').send_keys(time_in)
+
+      # 退社時間の入力
+      Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_2')).select_by(:text, '退勤')
+      driver.find_element(id: 'recording_timestamp_time_2').send_keys(time_out)
     end
 
     driver.quit
@@ -68,6 +72,11 @@ class Driver
   # 10:00~11:00の間のランダムな時間を出す
   def time_in
     Random.rand(Time.new(2019, 1, 1, 10)..Time.new(2019, 1, 1, 11)).strftime("%H%M")
+  end
+
+  # 20:00~21:00の間のランダムな時間を出す
+  def time_out
+    Random.rand(Time.new(2019, 1, 1, 20)..Time.new(2019, 1, 1, 21)).strftime("%H%M")
   end
 end
 
