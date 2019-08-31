@@ -74,11 +74,14 @@ class KotAutobot
         # すでに処理済みの日付であれば処理をスキップ
         next if attendance_registration_finished_days.include?(day)
 
-        # 打刻しない日であれば、処理処理が終了した日とみなす
+        # 打刻しない日であれば、処理が終了した日とみなす
         next attendance_registration_finished_days << day unless work_day?(year: target_year, month: target_month, day: day)
 
         # 各日付の打刻編集画面に飛ぶ
         Selenium::WebDriver::Support::Select.new(list).select_by(:text, '打刻編集')
+
+        # 開いた日付に関して、すでに勤怠登録が1つでもされていれば勤怠登録処理が終了しているとみなして処理を終了する
+        next attendance_registration_finished_days << day if driver.find_elements(id: 'recording_type_code').count.positive?
 
         # 出社時間の入力
         Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_1')).select_by(:text, '出勤')
