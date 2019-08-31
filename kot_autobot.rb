@@ -38,26 +38,7 @@ class KotAutobot
     driver.execute_script("return $('#month').val(#{target_month});")
     driver.action.click(driver.find_element(id: 'display_button')).perform
 
-    lists = driver.find_elements(class: 'htBlock-selectOther')
-
-    lists.each.with_index(1) do |list, day|
-      binding.pry if day == 7
-      next unless work_day?(year: target_year, month: target_month, day: day)
-
-      # 各日付の打刻編集画面に飛ぶ
-      Selenium::WebDriver::Support::Select.new(list).select_by(:text, '打刻編集')
-
-      # 出社時間の入力
-      Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_1')).select_by(:text, '出勤')
-      driver.find_element(id: 'recording_timestamp_time_1').send_keys(time_in)
-
-      # 退社時間の入力
-      Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_2')).select_by(:text, '退勤')
-      driver.find_element(id: 'recording_timestamp_time_2').send_keys(time_out)
-
-      # 打刻登録
-      driver.action.click(driver.find_element(id: 'button_01')).perform
-    end
+    regist_attendances(target_year, target_month)
 
     driver.quit
   end
@@ -68,6 +49,50 @@ class KotAutobot
     options = Selenium::WebDriver::Chrome::Options.new
 
     options
+  end
+
+  def regist_attendances(target_year, target_month)
+    attendance_registration_finished_days = []
+
+    # 勤怠登録を終了した毎に `driver.find_elements(class: 'htBlock-selectOther')` をやり直さないと
+    # Seleniumのエラーが出てしまうので、一回登録が済んだことに処理を頭からやり直すようにしている
+    # 詳しくはわからないけど、勤怠登録をするごとにHTMLのなんかの要素が変わっていて、
+    # 毎回新しくHTML要素を取得し直さないとSeleniumが動かないんだと思う
+    loop do
+      lists = driver.find_elements(class: 'htBlock-selectOther')
+
+      lists.each.with_index(1) do |list, day|
+        # すでに処理済みの日付であれば処理をスキップ
+        next if attendance_registration_finished_days.include?(day)
+
+        # 打刻しない日であれば、処理処理が終了した日とみなす
+        next attendance_registration_finished_days << day unless work_day?(year: target_year, month: target_month, day: day)
+
+        # 各日付の打刻編集画面に飛ぶ
+        Selenium::WebDriver::Support::Select.new(list).select_by(:text, '打刻編集')
+
+        # 出社時間の入力
+        Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_1')).select_by(:text, '出勤')
+        driver.find_element(id: 'recording_timestamp_time_1').send_keys(time_in)
+
+        # 退社時間の入力
+        Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_2')).select_by(:text, '退勤')
+        driver.find_element(id: 'recording_timestamp_time_2').send_keys(time_out)
+
+        # 打刻登録
+        driver.action.click(driver.find_element(id: 'button_01')).perform
+
+        # 打刻登録できたらこの日付の勤怠登録処理が終了した日とみなす
+        attendance_registration_finished_days << day
+
+        # ここまで来たら繰り返しを終了する
+        break
+      end
+
+      # 打刻可能な日数(lists.length)と、勤怠登録処理が終了した日数(attendance_registration_finished_days.length)が
+      # 同じ数値になったらこの月の全ての勤怠登録処理が終了したとみなしてloopを終了する
+      return if lists.length == attendance_registration_finished_days.length
+    end
   end
 
   def work_day?(year:, month:, day:)
