@@ -80,9 +80,14 @@ class KotAutobot
         # 各日付の打刻編集画面に飛ぶ
         Selenium::WebDriver::Support::Select.new(list).select_by(:text, '打刻編集')
 
-        # 開いた日付に関して、すでに勤怠登録が1つでもされていれば勤怠登録処理が終了しているとみなして処理を終了する
+        # 開いた日付に関して、すでに勤怠登録が1つでもされていれば勤怠登録処理が終了しているとみなしてloopの頭に戻る
         # recording_type_code というidが付与されたelementがある = 勤怠登録がされているとしている
-        next attendance_registration_finished_days << day if driver.find_elements(id: 'recording_type_code').count.positive?
+        if driver.find_elements(id: 'recording_type_code').count.positive?
+          attendance_registration_finished_days << day
+          driver.navigate.back
+
+          break
+        end
 
         # 出社時間の入力
         Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_1')).select_by(:text, '出勤')
