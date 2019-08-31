@@ -1,12 +1,19 @@
 require "selenium-webdriver"
 require 'dotenv/load'
+require 'pry-byebug'
 
 class Driver
   KOT_LOGIN_URL = "https://s3.kingtime.jp/admin/gzuSQM3Pi3cSdfm7yCAwqmPjBPZrpS3U?page_id=/login/do_logout".freeze
 
   class << self
     def access_kot
-      self.new.access_kot
+      print 'どの月の勤怠を入力するの？(2019/09) '
+      target_month_with_year = STDIN.gets.chomp.strip
+
+      target_year = target_month_with_year.split(/\/|\-/)[0]
+      target_month = target_month_with_year.split(/\/|\-/)[1]
+
+      self.new.access_kot(target_year, target_month)
     end
   end
 
@@ -17,7 +24,7 @@ class Driver
   end
 
   # sample code
-  def access_kot
+  def access_kot(target_year, target_month)
     driver.navigate.to(KOT_LOGIN_URL)
 
     login_id_element = driver.find_element(id: 'login_id')
@@ -31,7 +38,10 @@ class Driver
 
     lists = driver.find_elements(class: 'htBlock-selectOther')
 
-    lists.each do |list|
+    lists.each.with_index(1) do |list, day|
+      binding.pry if day == 7
+      next unless work_day?(year: target_year, month: target_month, day: day)
+
       # 各日付の打刻編集画面に飛ぶ
       Selenium::WebDriver::Support::Select.new(list).select_by(:text, '打刻編集')
 
@@ -56,6 +66,11 @@ class Driver
     options = Selenium::WebDriver::Chrome::Options.new
 
     options
+  end
+
+  def work_day?(year:, month:, day:)
+    workday_number = (1..5)
+    workday_number.include?(Date.new(year.to_i, month.to_i, day).cwday)
   end
 
   # 10:00~11:00の間のランダムな時間を出す
