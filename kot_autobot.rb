@@ -48,6 +48,10 @@ class Driver
     lists.each do |list|
       # 各日付の打刻編集画面に飛ぶ
       Selenium::WebDriver::Support::Select.new(list).select_by(:text, '打刻編集')
+
+      # 出社時間の入力
+      Selenium::WebDriver::Support::Select.new(driver.find_element(id: 'recording_type_code_1')).select_by(:text, '出勤')
+      driver.find_element(id: 'recording_timestamp_time_1').send_keys(time_in)
     end
 
     driver.quit
@@ -59,6 +63,11 @@ class Driver
     options = Selenium::WebDriver::Chrome::Options.new
 
     options
+  end
+
+  # 10:00~11:00の間のランダムな時間を出す
+  def time_in
+    Random.rand(Time.new(2019, 1, 1, 10)..Time.new(2019, 1, 1, 11)).strftime("%H%M")
   end
 end
 
