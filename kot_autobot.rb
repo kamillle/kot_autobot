@@ -95,7 +95,9 @@ class KotAutobot
     end
   end
 
+  # 渡された年月日が平日かどうかを判断する
   def work_day?(year:, month:, day:)
+    # Date#cwday は月~金曜日(平日)を1 ~ 5として返す
     workday_number = (1..5)
     workday_number.include?(Date.new(year.to_i, month.to_i, day).cwday)
   end
