@@ -18,7 +18,16 @@ class KotAutobot
       target_year = target_year_and_month.split(/\/|\-/)[0]
       target_month = target_year_and_month.split(/\/|\-/)[1]
 
-      self.new.run(target_year, target_month)
+      print '何日までの勤怠を入力する？(全部入れる場合はそのままenter押してね) '
+      desired_days = STDIN.gets.chomp.strip.to_i
+
+      # 0の場合はそのままenterが押されて、to_iメソッドにより0が作られたとみなして
+      # desired_daysを月末日に置き換える
+      if desired_days == 0
+        desired_days = Date.new(target_year.to_i, target_month.to_i, -1).day
+      end
+
+      self.new.run(target_year, target_month, desired_days)
     end
   end
 
@@ -28,14 +37,14 @@ class KotAutobot
     @driver ||= Selenium::WebDriver.for :chrome, options: driver_options
   end
 
-  def run(target_year, target_month)
+  def run(target_year, target_month, desired_days)
     driver.navigate.to(KOT_LOGIN_URL)
 
     login_kot
 
     open_target_attendance_registration_page(target_year, target_month)
 
-    register_attendances(target_year, target_month)
+    register_attendances(target_year, target_month, desired_days)
 
     driver.quit
   end
@@ -65,14 +74,19 @@ class KotAutobot
     driver.action.click(driver.find_element(id: 'display_button')).perform
   end
 
-  def register_attendances(target_year, target_month)
+  def register_attendances(target_year, target_month, desired_days)
     attendance_registration_finished_days = []
 
     # 勤怠登録を終了した毎に `driver.find_elements(class: 'htBlock-selectOther')` をやり直さないと
     # Seleniumのエラーが出てしまうので、一回登録が済んだことに処理を頭からやり直すようにしている
+    #
     # 詳しくはわからないけど、勤怠登録をするごとにHTMLのなんかの要素が変わっていて、
     # 毎回新しくHTML要素を取得し直さないとSeleniumが動かないんだと思う
     loop do
+      # 指定された勤怠登録をする日数と、勤怠登録処理が終了した日数(attendance_registration_finished_days.length)が
+      # 一致したらloopを終了する
+      return if desired_days == attendance_registration_finished_days.length
+
       lists = driver.find_elements(class: 'htBlock-selectOther')
 
       lists.each.with_index(1) do |list, day|
