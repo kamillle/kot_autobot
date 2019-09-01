@@ -35,7 +35,7 @@ class KotAutobot
 
     open_date_of_target_attendance_registration(target_year, target_month)
 
-    regist_attendances(target_year, target_month)
+    register_attendances(target_year, target_month)
 
     driver.quit
   end
@@ -65,7 +65,7 @@ class KotAutobot
     driver.action.click(driver.find_element(id: 'display_button')).perform
   end
 
-  def regist_attendances(target_year, target_month)
+  def register_attendances(target_year, target_month)
     attendance_registration_finished_days = []
 
     # 勤怠登録を終了した毎に `driver.find_elements(class: 'htBlock-selectOther')` をやり直さないと
