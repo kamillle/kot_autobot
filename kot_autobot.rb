@@ -122,7 +122,7 @@ class KotAutobot
         # 打刻登録できたらこの日付の勤怠登録処理が終了した日とみなす
         attendance_registration_finished_days << day
 
-        # ここまで来たら繰り返しを終了する
+        # ここまで来たら繰り返しを終了して、loopの頭に戻す
         break
       end
 
