@@ -9,7 +9,7 @@ class KotAutobot
 
   class << self
     def run
-      print 'どの月の勤怠を入力するの？(2019/09) '
+      print 'どの月の勤怠を入力するの？(例: 2019/09) '
       target_year_and_month = STDIN.gets.chomp.strip
 
       # 入力値が7桁でなかったらraiseする
