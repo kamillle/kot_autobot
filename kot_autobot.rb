@@ -38,6 +38,8 @@ class KotAutobot
   end
 
   def run(target_year, target_month, desired_days)
+    puts '勤怠入力処理を開始するよ'
+
     driver.navigate.to(KOT_LOGIN_URL)
 
     login_kot
@@ -47,12 +49,15 @@ class KotAutobot
     register_attendances(target_year, target_month, desired_days)
 
     driver.quit
+
+    puts '勤怠入力処理が終わったよ'
   end
 
   private
 
   def driver_options
     options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('--headless')
 
     options
   end
