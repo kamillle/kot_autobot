@@ -80,7 +80,7 @@ class KotAutobot
         next if attendance_registration_finished_days.include?(day)
 
         # 打刻しない日であれば、処理が終了した日とみなす
-        next attendance_registration_finished_days << day unless work_day?(year: target_year, month: target_month, day: day)
+        next attendance_registration_finished_days << day unless weekdays?(year: target_year, month: target_month, day: day)
 
         # 各日付の打刻編集画面に飛ぶ
         Selenium::WebDriver::Support::Select.new(list).select_by(:text, '打刻編集')
@@ -119,10 +119,10 @@ class KotAutobot
   end
 
   # 渡された年月日が平日かどうかを判断する
-  def work_day?(year:, month:, day:)
+  def weekdays?(year:, month:, day:)
     # Date#cwday は月~金曜日(平日)を1 ~ 5として返す
-    workday_number = (1..5)
-    workday_number.include?(Date.new(year.to_i, month.to_i, day).cwday)
+    weekdays_number = (1..5)
+    weekdays_number.include?(Date.new(year.to_i, month.to_i, day).cwday)
   end
 
   # 10:00~11:00の間のランダムな時間を出す
