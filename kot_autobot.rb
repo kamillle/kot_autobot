@@ -10,13 +10,13 @@ class KotAutobot
   class << self
     def run
       print 'どの月の勤怠を入力するの？(2019/09) '
-      target_month_with_year = STDIN.gets.chomp.strip
+      target_year_and_month = STDIN.gets.chomp.strip
 
       # 入力値が7桁でなかったらraiseする
-      raise ArgumentError, '入力値がおかしいよ!!' if target_month_with_year.length != 7
+      raise ArgumentError, '入力値がおかしいよ!!' if target_year_and_month.length != 7
 
-      target_year = target_month_with_year.split(/\/|\-/)[0]
-      target_month = target_month_with_year.split(/\/|\-/)[1]
+      target_year = target_year_and_month.split(/\/|\-/)[0]
+      target_month = target_year_and_month.split(/\/|\-/)[1]
 
       self.new.run(target_year, target_month)
     end
