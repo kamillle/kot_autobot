@@ -33,7 +33,7 @@ class KotAutobot
 
     login_kot
 
-    open_date_of_target_attendance_registration(target_year, target_month)
+    open_target_attendance_registration_page(target_year, target_month)
 
     register_attendances(target_year, target_month)
 
@@ -57,7 +57,7 @@ class KotAutobot
   end
 
   # 指定された年と月の勤怠入力画面を開く
-  def open_date_of_target_attendance_registration(target_year, target_month)
+  def open_target_attendance_registration_page(target_year, target_month)
     # id='year', 'month' はhiddenなので、jsを実行して値を入れている
     driver.execute_script("return $('#year').val(#{target_year});")
     driver.execute_script("return $('#month').val(#{target_month});")
